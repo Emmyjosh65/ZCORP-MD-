@@ -27,13 +27,14 @@ function showError(message) {
 }
 
 function normalizePhone(value) {
-    return value.replace(/\D/g, "");
+    return String(value).replace(/\D/g, "");
 }
 
 if (generateBtn) {
     generateBtn.addEventListener("click", async () => {
-
-        const phone = normalizePhone(phoneInput.value);
+        const phone = normalizePhone(
+            phoneInput?.value || ""
+        );
 
         if (!phone) {
             showError("Enter your WhatsApp number.");
@@ -41,13 +42,15 @@ if (generateBtn) {
         }
 
         if (phone.length < 10) {
-            showError("Enter a valid international WhatsApp number.");
+            showError(
+                "Enter a valid international WhatsApp number."
+            );
             return;
         }
 
         generateBtn.disabled = true;
         generateBtn.textContent = "GENERATING...";
-        
+
         if (result) {
             result.style.display = "block";
         }
@@ -56,10 +59,12 @@ if (generateBtn) {
             codeBox.textContent = "••••••••";
         }
 
-        showStatus("Connecting to ZCORP-MD...", "");
+        showStatus(
+            "Connecting to ZCORP-MD...",
+            ""
+        );
 
         try {
-
             const response = await fetch(
                 `${API_BASE}/api/pair`,
                 {
@@ -73,7 +78,15 @@ if (generateBtn) {
                 }
             );
 
-            const data = await response.json();
+            let data;
+
+            try {
+                data = await response.json();
+            } catch {
+                throw new Error(
+                    `Server returned HTTP ${response.status}`
+                );
+            }
 
             if (!response.ok || !data.ok) {
                 throw new Error(
@@ -82,29 +95,23 @@ if (generateBtn) {
                 );
             }
 
-            if (!data.code) {
+            if (!data.id) {
                 throw new Error(
-                    "The ZCORP-MD server did not return a pairing code."
+                    "Pairing server did not return an ID."
                 );
             }
 
-            /*
-             * REAL BAILEYS CODE
-             */
-            codeBox.textContent = data.code;
-
             showStatus(
-                "REAL BAILEYS PAIRING CODE GENERATED ✓",
-                "success"
+                "Waiting for real Baileys pairing code..."
             );
 
-            if (data.id) {
-                pollStatus(data.id);
-            }
+            await waitForCode(data.id);
 
         } catch (error) {
-
-            console.error(error);
+            console.error(
+                "[ZCORP-MD PAIRING]",
+                error
+            );
 
             showError(
                 error.message ||
@@ -112,98 +119,116 @@ if (generateBtn) {
             );
 
         } finally {
-
             generateBtn.disabled = false;
-            generateBtn.textContent = "Get Real Pairing Code";
-
+            generateBtn.textContent =
+                "Get Real Pairing Code";
         }
     });
 }
 
+async function waitForCode(id) {
+    const maxAttempts = 60;
 
-async function pollStatus(id) {
-
-    let attempts = 0;
-
-    const interval = setInterval(async () => {
-
-        attempts++;
-
+    for (
+        let attempt = 0;
+        attempt < maxAttempts;
+        attempt++
+    ) {
         try {
-
             const response = await fetch(
                 `${API_BASE}/api/pair/status?id=${encodeURIComponent(id)}`
             );
 
-            const data = await response.json();
+            let data;
 
-            if (data.code && codeBox) {
-                codeBox.textContent = data.code;
+            try {
+                data = await response.json();
+            } catch {
+                throw new Error(
+                    `Status server returned HTTP ${response.status}`
+                );
             }
 
-            if (
-                data.status === "connected" ||
-                data.status === "success"
-            ) {
+            if (data.code) {
+                if (codeBox) {
+                    codeBox.textContent = data.code;
+                }
 
+                showStatus(
+                    "REAL BAILEYS PAIRING CODE READY ✓",
+                    "success"
+                );
+
+                return;
+            }
+
+            if (data.status === "error") {
+                throw new Error(
+                    data.error ||
+                    "WhatsApp pairing failed."
+                );
+            }
+
+            if (data.status === "connected") {
                 showStatus(
                     "WhatsApp connected successfully ✓",
                     "success"
                 );
 
-                clearInterval(interval);
+                return;
             }
 
-            if (attempts >= 60) {
-                clearInterval(interval);
-            }
-
-        } catch (error) {
-
-            console.log(
-                "Pairing status check:",
-                error.message
+            showStatus(
+                `Waiting for pairing code... ${attempt + 1}/60`
             );
 
+        } catch (error) {
+            throw error;
         }
 
-    }, 2000);
+        await new Promise(
+            resolve => setTimeout(resolve, 2000)
+        );
+    }
+
+    throw new Error(
+        "Pairing code request timed out."
+    );
 }
 
-
 if (copyBtn) {
+    copyBtn.addEventListener(
+        "click",
+        async () => {
+            const code =
+                codeBox?.textContent?.trim();
 
-    copyBtn.addEventListener("click", async () => {
+            if (
+                !code ||
+                code === "••••••••" ||
+                code === "ERROR"
+            ) {
+                return;
+            }
 
-        const code =
-            codeBox?.textContent?.trim();
+            try {
+                await navigator.clipboard.writeText(
+                    code
+                );
 
-        if (
-            !code ||
-            code === "••••••••" ||
-            code === "ERROR"
-        ) {
-            return;
+                copyBtn.textContent =
+                    "COPIED ✓";
+
+                setTimeout(() => {
+                    copyBtn.textContent =
+                        "COPY CODE";
+                }, 2000);
+
+            } catch {
+                alert(
+                    "Copy failed. Please copy the code manually."
+                );
+            }
         }
-
-        try {
-
-            await navigator.clipboard.writeText(code);
-
-            copyBtn.textContent = "COPIED ✓";
-
-            setTimeout(() => {
-                copyBtn.textContent = "COPY CODE";
-            }, 2000);
-
-        } catch (error) {
-
-            alert(
-                "Copy failed. Please copy the code manually."
-            );
-
-        }
-
-    });
-
+    );
 }
