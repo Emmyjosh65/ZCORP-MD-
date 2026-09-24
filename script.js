@@ -1,445 +1,209 @@
-/*
-  IMPORTANT:
+const API_BASE = "";
 
-  Put the PUBLIC HTTPS URL of your Pterodactyl ZCORP-MD server here.
+const phoneInput = document.getElementById("phone");
+const generateBtn = document.getElementById("generateBtn");
+const result = document.getElementById("result");
+const codeBox = document.getElementById("codeBox");
+const copyBtn = document.getElementById("copyBtn");
+const statusText = document.getElementById("status");
 
-  Example:
+function showStatus(message, type = "") {
+    if (!statusText) return;
 
-  const API_BASE = "https://zcorp-bot.example.com";
-
-  The API must be the server running the actual Baileys bot.
-*/
-
-const API_BASE =
-  (window.ZCORP_API_BASE ||
-    "https://YOUR-PTERODACTYL-DOMAIN")
-  .replace(/\/$/, "");
-
-
-const form = document.getElementById("pairForm");
-
-const phoneInput =
-  document.getElementById("phone");
-
-const pairButton =
-  document.getElementById("pairButton");
-
-const btnText =
-  document.getElementById("btnText");
-
-const result =
-  document.getElementById("result");
-
-const pairCode =
-  document.getElementById("pairCode");
-
-const copyBtn =
-  document.getElementById("copyBtn");
-
-const resultText =
-  document.getElementById("resultText");
-
-const statusPill =
-  document.getElementById("statusPill");
-
-const statusText =
-  statusPill.querySelector("span");
-
-const message =
-  document.getElementById("message");
-
-
-let pollTimer = null;
-
-let currentSession = null;
-
-
-/* =========================================
-   PHONE CLEANER
-========================================= */
-
-function cleanPhone(value) {
-
-  return String(value || "")
-    .replace(/\D/g, "");
-
+    statusText.textContent = message;
+    statusText.className = `status ${type}`;
 }
 
+function showError(message) {
+    if (result) {
+        result.style.display = "block";
+    }
 
-/* =========================================
-   BUTTON STATE
-========================================= */
+    if (codeBox) {
+        codeBox.textContent = "ERROR";
+    }
 
-function setBusy(busy) {
-
-  pairButton.disabled = busy;
-
-  btnText.textContent =
-    busy
-      ? "Connecting to WhatsApp…"
-      : "Get Real Pairing Code";
-
+    showStatus(message, "error");
 }
 
-
-/* =========================================
-   MESSAGE
-========================================= */
-
-function showMessage(text = "") {
-
-  message.textContent = text;
-
+function normalizePhone(value) {
+    return value.replace(/\D/g, "");
 }
 
+if (generateBtn) {
+    generateBtn.addEventListener("click", async () => {
 
-/* =========================================
-   STATUS
-========================================= */
+        const phone = normalizePhone(phoneInput.value);
 
-function setStatus(kind, text) {
-
-  statusPill.className =
-    `status-pill ${kind}`;
-
-  statusText.textContent = text;
-
-}
-
-
-/* =========================================
-   SHOW REAL CODE
-========================================= */
-
-function showCode(code) {
-
-  /*
-    IMPORTANT:
-
-    This value comes directly from:
-
-    sock.requestPairingCode(phone)
-
-    We do NOT generate it here.
-  */
-
-  pairCode.textContent =
-    code || "--------";
-
-  result.hidden = false;
-
-  resultText.textContent =
-    "Open WhatsApp → Settings → Linked Devices → " +
-    "Link a device → Link with phone number instead, " +
-    "then enter this exact code.";
-
-  setStatus(
-    "waiting",
-    "Waiting for WhatsApp to accept the code"
-  );
-
-}
-
-
-/* =========================================
-   REQUEST REAL BAILEYS CODE
-========================================= */
-
-async function requestPairing(phone) {
-
-  const response =
-    await fetch(
-      `${API_BASE}/api/pair`,
-      {
-        method: "POST",
-
-        headers: {
-          "Content-Type": "application/json"
-        },
-
-        body: JSON.stringify({
-          phone: phone
-        })
-      }
-    );
-
-
-  const data =
-    await response
-      .json()
-      .catch(() => ({}));
-
-
-  if (!response.ok || !data.ok) {
-
-    throw new Error(
-      data.error ||
-      `Pairing server returned ${response.status}`
-    );
-
-  }
-
-
-  return data;
-
-}
-
-
-/* =========================================
-   CHECK SESSION STATUS
-========================================= */
-
-async function pollStatus(sessionId) {
-
-  clearTimeout(pollTimer);
-
-
-  try {
-
-    const response =
-      await fetch(
-        `${API_BASE}/api/pair/status?id=${encodeURIComponent(sessionId)}`,
-        {
-          cache: "no-store"
+        if (!phone) {
+            showError("Enter your WhatsApp number.");
+            return;
         }
-      );
 
+        if (phone.length < 10) {
+            showError("Enter a valid international WhatsApp number.");
+            return;
+        }
 
-    const data =
-      await response
-        .json()
-        .catch(() => ({}));
+        generateBtn.disabled = true;
+        generateBtn.textContent = "GENERATING...";
+        
+        if (result) {
+            result.style.display = "block";
+        }
 
+        if (codeBox) {
+            codeBox.textContent = "••••••••";
+        }
 
-    if (data.status === "connected") {
+        showStatus("Connecting to ZCORP-MD...", "");
 
-      setStatus(
-        "connected",
-        "WhatsApp connected successfully"
-      );
+        try {
 
+            const response = await fetch(
+                `${API_BASE}/api/pair`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        phone: phone
+                    })
+                }
+            );
 
-      resultText.textContent =
-        "✅ Your WhatsApp session is now connected " +
-        "to ZCORP-MD. You can send .menu on WhatsApp.";
+            const data = await response.json();
 
+            if (!response.ok || !data.ok) {
+                throw new Error(
+                    data.error ||
+                    "Pairing request failed."
+                );
+            }
 
-      setBusy(false);
+            if (!data.code) {
+                throw new Error(
+                    "The ZCORP-MD server did not return a pairing code."
+                );
+            }
 
-      return;
+            /*
+             * REAL BAILEYS CODE
+             */
+            codeBox.textContent = data.code;
 
-    }
+            showStatus(
+                "REAL BAILEYS PAIRING CODE GENERATED ✓",
+                "success"
+            );
 
+            if (data.id) {
+                pollStatus(data.id);
+            }
 
-    if (
-      data.status === "pairing_failed" ||
-      data.status === "logged_out"
-    ) {
+        } catch (error) {
 
-      setStatus(
-        "error",
-        "Pairing was rejected — request a fresh code"
-      );
+            console.error(error);
 
+            showError(
+                error.message ||
+                "Unable to connect to ZCORP-MD."
+            );
 
-      resultText.textContent =
-        "WhatsApp rejected this pairing attempt. " +
-        "Tap Get Real Pairing Code and use the new code immediately.";
+        } finally {
 
-      return;
+            generateBtn.disabled = false;
+            generateBtn.textContent = "Get Real Pairing Code";
 
-    }
-
-
-    setStatus(
-      "waiting",
-      "Waiting for WhatsApp to accept the code"
-    );
-
-
-    pollTimer =
-      setTimeout(
-        () => pollStatus(sessionId),
-        2500
-      );
-
-  }
-
-  catch {
-
-    pollTimer =
-      setTimeout(
-        () => pollStatus(sessionId),
-        4000
-      );
-
-  }
-
+        }
+    });
 }
 
 
-/* =========================================
-   PAIR FORM
-========================================= */
+async function pollStatus(id) {
 
-form.addEventListener(
-  "submit",
-  async (event) => {
+    let attempts = 0;
 
-    event.preventDefault();
+    const interval = setInterval(async () => {
 
+        attempts++;
 
-    clearTimeout(pollTimer);
+        try {
 
-    showMessage("");
+            const response = await fetch(
+                `${API_BASE}/api/pair/status?id=${encodeURIComponent(id)}`
+            );
 
-    result.hidden = true;
+            const data = await response.json();
 
+            if (data.code && codeBox) {
+                codeBox.textContent = data.code;
+            }
 
-    const phone =
-      cleanPhone(phoneInput.value);
+            if (
+                data.status === "connected" ||
+                data.status === "success"
+            ) {
 
+                showStatus(
+                    "WhatsApp connected successfully ✓",
+                    "success"
+                );
 
-    if (
-      phone.length < 8 ||
-      phone.length > 15
-    ) {
+                clearInterval(interval);
+            }
 
-      showMessage(
-        "Enter a valid international WhatsApp number, " +
-        "for example 2349066760078."
-      );
+            if (attempts >= 60) {
+                clearInterval(interval);
+            }
 
-      phoneInput.focus();
+        } catch (error) {
 
-      return;
+            console.log(
+                "Pairing status check:",
+                error.message
+            );
 
-    }
+        }
 
-
-    /*
-      Prevent accidental deployment while
-      API_BASE still contains the placeholder.
-    */
-
-    if (
-      API_BASE.includes(
-        "YOUR-PTERODACTYL-DOMAIN"
-      )
-    ) {
-
-      showMessage(
-        "Set API_BASE in script.js to your public " +
-        "Pterodactyl HTTPS URL first."
-      );
-
-      return;
-
-    }
+    }, 2000);
+}
 
 
-    setBusy(true);
+if (copyBtn) {
 
-    btnText.textContent =
-      "Requesting real Baileys code…";
+    copyBtn.addEventListener("click", async () => {
 
+        const code =
+            codeBox?.textContent?.trim();
 
-    try {
+        if (
+            !code ||
+            code === "••••••••" ||
+            code === "ERROR"
+        ) {
+            return;
+        }
 
-      const data =
-        await requestPairing(phone);
+        try {
 
+            await navigator.clipboard.writeText(code);
 
-      currentSession =
-        data.id;
+            copyBtn.textContent = "COPIED ✓";
 
+            setTimeout(() => {
+                copyBtn.textContent = "COPY CODE";
+            }, 2000);
 
-      /*
-        data.code is the ACTUAL code returned
-        by Baileys.
-      */
+        } catch (error) {
 
-      showCode(data.code);
+            alert(
+                "Copy failed. Please copy the code manually."
+            );
 
+        }
 
-      pollStatus(data.id);
+    });
 
-    }
-
-    catch (error) {
-
-      showMessage(
-        error.message ||
-        "Unable to generate a pairing code."
-      );
-
-      setBusy(false);
-
-    }
-
-  }
-);
-
-
-/* =========================================
-   COPY CODE
-========================================= */
-
-copyBtn.addEventListener(
-  "click",
-  async () => {
-
-    const code =
-      pairCode.textContent.trim();
-
-
-    if (
-      !code ||
-      code === "--------"
-    ) {
-      return;
-    }
-
-
-    try {
-
-      await navigator.clipboard.writeText(code);
-
-      copyBtn.textContent = "✓";
-
-
-      setTimeout(
-        () => {
-          copyBtn.textContent = "⧉";
-        },
-        1200
-      );
-
-    }
-
-    catch {
-
-      showMessage(
-        "Copy failed. Long-press the code and copy it manually."
-      );
-
-    }
-
-  }
-);
-
-
-/* =========================================
-   NUMBER INPUT
-========================================= */
-
-phoneInput.addEventListener(
-  "input",
-  () => {
-
-    phoneInput.value =
-      cleanPhone(phoneInput.value)
-        .slice(0, 15);
-
-  }
-);
+}
