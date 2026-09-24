@@ -1,0 +1,9 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "http://pterodactyl-free-node-3.hostkita.help:20594/api/:path*"
+    }
+  ]
+}
