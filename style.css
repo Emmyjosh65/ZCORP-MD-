@@ -1,0 +1,245 @@
+:root {
+    --bg-color: #0b0b0b;
+    --card-bg: #141414;
+    --primary-red: #cc0000;
+    --dark-red: #800000;
+    --gold: #d4af37;
+    --light-gold: #f3e5ab;
+    --text-main: #ffffff;
+    --text-muted: #b0b0b0;
+    --border-color: #2a2a2a;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    background-image: radial-gradient(circle at center, #1a0505 0%, #0b0b0b 100%);
+}
+
+.container {
+    width: 100%;
+    max-width: 480px;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(204, 0, 0, 0.15);
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.logo-badge {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, var(--primary-red), var(--dark-red));
+    border: 2px solid var(--gold);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto 15px;
+    font-size: 24px;
+    color: var(--gold);
+    box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
+}
+
+.header h1 {
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.header h1 .highlight {
+    color: var(--gold);
+}
+
+.header p {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-top: 5px;
+}
+
+.card {
+    margin-bottom: 20px;
+}
+
+.input-group {
+    margin-bottom: 20px;
+}
+
+.input-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--light-gold);
+}
+
+.input-group label i {
+    margin-right: 5px;
+    color: var(--gold);
+}
+
+.input-group input {
+    width: 100%;
+    padding: 12px 15px;
+    background: #1f1f1f;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    color: #fff;
+    font-size: 15px;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+.input-group input:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 8px rgba(212, 175, 55, 0.25);
+}
+
+.input-group small {
+    display: block;
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 5px;
+}
+
+.gold-btn {
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(135deg, var(--gold), #aa8c2c);
+    color: #0b0b0b;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.2s, opacity 0.2s;
+    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+}
+
+.gold-btn:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+}
+
+.hidden {
+    display: none !important;
+}
+
+.result-container {
+    margin-top: 20px;
+    padding: 15px;
+    background: #1a1a1a;
+    border: 1px dashed var(--gold);
+    border-radius: 8px;
+    text-align: center;
+}
+
+.result-container h3 {
+    font-size: 14px;
+    color: var(--light-gold);
+    margin-bottom: 10px;
+}
+
+.code-box {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #0f0f0f;
+    padding: 10px 15px;
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+}
+
+#codeDisplay {
+    font-family: monospace;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--gold);
+    letter-spacing: 2px;
+}
+
+#copyBtn {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 16px;
+    transition: color 0.2s;
+}
+
+#copyBtn:hover {
+    color: var(--gold);
+}
+
+.instruction-text {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 10px;
+}
+
+.loader {
+    text-align: center;
+    padding: 20px;
+    color: var(--gold);
+}
+
+.loader i {
+    font-size: 28px;
+    margin-bottom: 8px;
+}
+
+.loader p {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.footer {
+    border-top: 1px solid var(--border-color);
+    padding-top: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.owner-info p {
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+.brand-name {
+    color: var(--primary-red);
+    font-weight: 600;
+}
+
+.gold-text {
+    color: var(--gold);
+    font-weight: 600;
+}
+
+.social-links a {
+    color: var(--text-muted);
+    font-size: 16px;
+    margin-left: 12px;
+    transition: color 0.2s;
+}
+
+.social-links a:hover {
+    color: var(--gold);
+}
