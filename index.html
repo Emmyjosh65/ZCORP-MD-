@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZCORP-MD | Web Pairing System</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container">
+        <!-- Header Section -->
+        <header class="header">
+            <div class="logo-badge">
+                <i class="fa-solid fa-robot"></i>
+            </div>
+            <h1>ZCORP-MD <span class="highlight">PAIRING</span></h1>
+            <p>Generate your session code safely without Telegram. Fast, secure, and automated.</p>
+        </header>
+
+        <!-- Main Card Section -->
+        <main class="card">
+            <form id="pairingForm">
+                <div class="input-group">
+                    <label for="phoneNumber">
+                        <i class="fa-solid fa-phone"></i> WhatsApp Number
+                    </label>
+                    <input 
+                        type="tel" 
+                        id="phoneNumber" 
+                        placeholder="e.g., 2348123456789" 
+                        required
+                    >
+                    <small>Enter your full international number with country code (no + or spaces).</small>
+                </div>
+
+                <button type="submit" id="submitBtn" class="gold-btn">
+                    <i class="fa-solid fa-key"></i> Get Pairing Code
+                </button>
+            </form>
+
+            <!-- Result Box -->
+            <div id="resultContainer" class="result-container hidden">
+                <h3>Your Pairing Code:</h3>
+                <div class="code-box">
+                    <span id="codeDisplay">----</span>
+                    <button id="copyBtn" title="Copy Code">
+                        <i class="fa-solid fa-copy"></i>
+                    </button>
+                </div>
+                <p class="instruction-text">Copy this code and paste it into your WhatsApp linked devices notification.</p>
+            </div>
+
+            <!-- Loading Spinner -->
+            <div id="loadingSpinner" class="loader hidden">
+                <i class="fa-solid fa-circle-notch fa-spin"></i>
+                <p>Generating session code, please wait...</p>
+            </div>
+        </main>
+
+        <!-- Footer / Owner Info Section -->
+        <footer class="footer">
+            <div class="owner-info">
+                <p>Powered by <span class="brand-name">ZCORP-MD</span></p>
+                <p>Owner & Creator: <span class="gold-text">Danny</span></p>
+            </div>
+            <div class="social-links">
+                <a href="https://github.com" target="_blank" title="GitHub"><i class="fa-brands fa-github"></i></a>
+                <a href="https://whatsapp.com" target="_blank" title="WhatsApp Support"><i class="fa-brands fa-whatsapp"></i></a>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Script File -->
+    <script src="script.js"></script>
+</body>
+</html>
