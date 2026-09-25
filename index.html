@@ -2,93 +2,136 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#0d0d0d">
-  <meta name="description" content="ZCORP-MD real WhatsApp pairing code portal powered by Baileys.">
-  <title>ZCORP-MD • Pairing</title>
-  <link rel="stylesheet" href="style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+  <meta name="theme-color" content="#101010">
+  <meta name="robots" content="index, follow, max-image-preview:large">
+  <meta name="author" content="Godwin Emmanuel (Zeus)">
+
+  <meta
+    name="description"
+    content="ZCORP-MD by Godwin Emmanuel (Zeus) — WhatsApp Baileys pairing portal, commands, projects and official contact links."
+  >
+
+  <meta
+    name="keywords"
+    content="Godwin Emmanuel, Zeus, ZCORP-MD, ZCORP MD, WhatsApp bot, Baileys, WhatsApp pairing, Nigeria developer"
+  >
+
+  <link rel="canonical" href="https://zcorp-md.vercel.app/">
+
+  <meta property="og:type" content="profile">
+  <meta property="og:title" content="Godwin Emmanuel (Zeus) — ZCORP-MD">
+  <meta
+    property="og:description"
+    content="Official ZCORP-MD portal by Godwin Emmanuel, also known as Zeus."
+  >
+  <meta property="og:url" content="https://zcorp-md.vercel.app/">
+  <meta property="og:site_name" content="ZCORP-MD">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Godwin Emmanuel (Zeus) — ZCORP-MD">
+  <meta
+    name="twitter:description"
+    content="Official ZCORP-MD portal by Godwin Emmanuel (Zeus)."
+  >
+
+  <title>Godwin Emmanuel (Zeus) | ZCORP-MD</title>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ProfilePage",
+    "name": "Godwin Emmanuel (Zeus) — ZCORP-MD",
+    "url": "https://zcorp-md.vercel.app/",
+    "mainEntity": {
+      "@type": "Person",
+      "name": "Godwin Emmanuel",
+      "alternateName": [
+        "Zeus",
+        "ZCORP-MD"
+      ],
+      "description": "Creator and owner of ZCORP-MD, a WhatsApp Baileys bot and pairing portal.",
+      "url": "https://zcorp-md.vercel.app/",
+      "sameAs": [
+        "https://wa.me/2349066760078",
+        "https://t.me/zeus11023725",
+        "https://whatsapp.com/channel/0029VbCoI29AYlUOb6Bdpo30"
+      ]
+    }
+  }
+  </script>
+
+  <link rel="stylesheet" href="./style.css">
 </head>
 
 <body>
 
-  <div class="bg-grid"></div>
+  <main class="shell">
 
-  <main class="page">
-
-    <section class="card" aria-label="ZCORP-MD pairing portal">
+    <section class="card">
 
       <div class="brand-mark" aria-hidden="true">
         <span>🤖</span>
       </div>
 
-      <header class="hero">
+      <h1>
+        ZCORP-MD <b>PAIRING</b>
+      </h1>
 
-        <p class="eyebrow">ZCORP-MD</p>
+      <p class="subtitle">
+        Generate your real WhatsApp Baileys pairing code safely.
+        Fast, secure and automated.
+      </p>
 
-        <h1>
-          PAIRING <span>PORTAL</span>
-        </h1>
-
-        <p class="subtitle">
-          Generate a real 8-character WhatsApp pairing code directly from Baileys.
-        </p>
-
-        <div class="live-badge">
-          <i></i>
-          LIVE BAILEYS CONNECTION
-        </div>
-
-      </header>
-
-      <form id="pairForm" class="form" novalidate>
+      <form id="pairForm" autocomplete="off">
 
         <label for="phone">
           📱 WhatsApp Number
         </label>
 
-        <div class="input-wrap">
-          <input
-            id="phone"
-            name="phone"
-            inputmode="numeric"
-            autocomplete="tel"
-            maxlength="15"
-            placeholder="2349066760078"
-            value="2349066760078"
-            aria-describedby="phoneHelp"
-          >
-        </div>
+        <input
+          id="phone"
+          name="phone"
+          inputmode="numeric"
+          autocomplete="tel"
+          placeholder="2349066760078"
+          maxlength="15"
+          required
+        >
 
-        <p id="phoneHelp" class="help">
-          Enter the full international number with country code.
-          No +, spaces or dashes.
+        <p class="hint">
+          Enter your full international number with country code —
+          no + or spaces.
         </p>
 
-        <button
-          id="pairButton"
-          class="pair-btn"
-          type="submit"
-        >
-          <span class="btn-icon">⌕</span>
-          <span id="btnText">Get Real Pairing Code</span>
+        <button id="pairButton" type="submit">
+          <span>🔑</span>
+          Get Pairing Code
         </button>
 
       </form>
 
-      <section id="result" class="result" hidden>
+      <section
+        id="result"
+        class="result hidden"
+        aria-live="polite"
+      >
 
-        <div class="result-title">
-          Your Pairing Code
-        </div>
+        <h2 id="resultTitle">
+          Your Pairing Code:
+        </h2>
 
-        <div class="code-row">
+        <div class="code-box">
 
-          <code id="pairCode">--------</code>
+          <strong id="pairingCode">
+            --------
+          </strong>
 
           <button
-            id="copyBtn"
-            class="copy-btn"
+            id="copyButton"
             type="button"
+            title="Copy pairing code"
             aria-label="Copy pairing code"
           >
             ⧉
@@ -96,79 +139,114 @@
 
         </div>
 
-        <p id="resultText" class="result-text">
-          Open WhatsApp → Settings → Linked Devices →
-          Link a device → Link with phone number instead,
-          then enter this exact code.
+        <p id="resultHint">
+          Open WhatsApp → Linked Devices →
+          Link a device → Link with phone number,
+          then enter the 8-character code.
         </p>
 
-        <div id="statusPill" class="status-pill waiting">
-          <i></i>
-          <span>Waiting for WhatsApp</span>
+        <div id="status" class="status">
+          Waiting…
         </div>
 
       </section>
 
-      <div
-        id="message"
-        class="message"
-        role="status"
-        aria-live="polite"
-      ></div>
 
-      <footer>
+      <!-- GODWIN EMMANUEL PROFILE -->
 
-        <div class="footer-line"></div>
+      <section
+        class="about"
+        id="about-godwin-emmanuel"
+      >
+
+        <div class="section-kicker">
+          OFFICIAL PROFILE
+        </div>
+
+        <h2>
+          Godwin Emmanuel <span>(Zeus)</span>
+        </h2>
 
         <p>
-          Powered by <strong>ZCORP-MD</strong>
+          Godwin Emmanuel, known online as
+          <strong>Zeus</strong>, is the creator and owner
+          of <strong>ZCORP-MD</strong>, the WhatsApp
+          Baileys bot and pairing portal presented
+          on this website.
         </p>
 
-        <p class="owner">
+        <p class="seo-note">
+          Search name:
+          <strong>Godwin Emmanuel (Zeus)</strong>
+          · Brand:
+          <strong>ZCORP-MD</strong>
+        </p>
+
+      </section>
+
+
+      <!-- OWNER CONTACTS -->
+
+      <section
+        class="owner"
+        aria-label="Official owner contacts"
+      >
+
+        <div class="owner-title">
           👑 ZCORP-MD OWNER
-        </p>
+        </div>
 
-        <div class="owner-links">
+        <div class="owner-name">
+          GODWIN EMMANUEL (ZEUS)
+        </div>
+
+        <div class="contact-grid">
 
           <a
             href="https://wa.me/2349066760078"
             target="_blank"
             rel="noopener noreferrer"
-            class="contact-tag whatsapp"
           >
-            <span>📱</span>
-            <span>WhatsApp</span>
+            📱 <span>WhatsApp</span>
           </a>
 
           <a
             href="https://t.me/zeus11023725"
             target="_blank"
             rel="noopener noreferrer"
-            class="contact-tag telegram"
           >
-            <span>✈️</span>
-            <span>@zeus11023725</span>
+            ✈️ <span>Telegram</span>
           </a>
 
           <a
             href="mailto:ge5853987@gmail.com"
-            class="contact-tag email"
           >
-            <span>📧</span>
-            <span>ge5853987@gmail.com</span>
+            📧 <span>Email</span>
           </a>
 
           <a
             href="https://whatsapp.com/channel/0029VbCoI29AYlUOb6Bdpo30"
             target="_blank"
             rel="noopener noreferrer"
-            class="contact-tag channel"
           >
-            <span>📢</span>
-            <span>WhatsApp Channel</span>
+            📢 <span>WhatsApp Channel</span>
           </a>
 
         </div>
+
+      </section>
+
+
+      <footer>
+
+        <span>
+          Powered by <b>ZCORP-MD</b>
+        </span>
+
+        <span>
+          Owner:
+          <b>Godwin Emmanuel (Zeus)</b>
+        </span>
 
       </footer>
 
@@ -176,7 +254,7 @@
 
   </main>
 
-  <script src="script.js"></script>
+  <script src="./script.js" defer></script>
 
 </body>
 </html>
